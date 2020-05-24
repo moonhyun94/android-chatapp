@@ -49,8 +49,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         submissionBtn = (Button) findViewById(R.id.submissionButton);
         backBtn = (Button) findViewById(R.id.backButton);
 
-
-
         submissionBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
     }

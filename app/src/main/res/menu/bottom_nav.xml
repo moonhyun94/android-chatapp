@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/main_menu"
+        android:enabled="true"
+        android:icon="@drawable/m_icon"
+        android:title="main"/>
+
+    <item
+        android:id="@+id/chat_menu"
+        android:enabled="true"
+        android:icon="@drawable/c_icon"
+        android:title="chat"/>
+
+    <item
+        android:id="@+id/story_menu"
+        android:enabled="true"
+        android:icon="@drawable/s_icon"
+        android:title="story"/>
+
+    <item
+        android:id="@+id/setting_menu"
+        android:enabled="true"
+        android:icon="@drawable/p_icon"
+        android:title="settings"/>
+
+</menu>
