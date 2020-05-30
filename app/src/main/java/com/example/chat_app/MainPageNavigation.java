@@ -10,20 +10,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.chat_app.fragment.Frag1;
-import com.example.chat_app.fragment.Frag2;
-import com.example.chat_app.fragment.Frag3;
-import com.example.chat_app.fragment.Frag4;
+import com.example.chat_app.fragment.ChatFragment;
+import com.example.chat_app.fragment.FriendFragment;
+import com.example.chat_app.fragment.MyPageFragment;
+import com.example.chat_app.fragment.StoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainPage extends AppCompatActivity {
+public class MainPageNavigation extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FragmentTransaction fTransaction;
-    private Frag1 frag1 = new Frag1();
-    private Frag2 frag2 = new Frag2();
-    private Frag3 frag3 = new Frag3();
-    private Frag4 frag4 = new Frag4();
+
+    private FriendFragment friendFragment = new FriendFragment();
+    private ChatFragment chatFragment = new ChatFragment();
+    private StoryFragment storyFragment = new StoryFragment();
+    private MyPageFragment myPageFragment = new MyPageFragment();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,29 +33,29 @@ public class MainPage extends AppCompatActivity {
         Intent mainPageIntent = getIntent();
 
         fTransaction = fragmentManager.beginTransaction();
-        fTransaction.replace(R.id.mainFrame, frag1).commitAllowingStateLoss();
+        fTransaction.replace(R.id.mainFrame, friendFragment).commitAllowingStateLoss();
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNav);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-               fTransaction = fragmentManager.beginTransaction();
+                fTransaction = fragmentManager.beginTransaction();
 
                 switch (menuItem.getItemId()) {
-                    case R.id.main_menu:
-                        fTransaction.replace(R.id.mainFrame, frag1).commitAllowingStateLoss();
+                    case R.id.friend_menu:
+                        fTransaction.replace(R.id.mainFrame, friendFragment).commitAllowingStateLoss();
                         break;
 
                     case R.id.chat_menu:
-                        fTransaction.replace(R.id.mainFrame, frag2).commitAllowingStateLoss();
+                        fTransaction.replace(R.id.mainFrame, chatFragment).commitAllowingStateLoss();
                         break;
 
                     case R.id.story_menu:
-                        fTransaction.replace(R.id.mainFrame, frag3).commitAllowingStateLoss();
+                        fTransaction.replace(R.id.mainFrame, storyFragment).commitAllowingStateLoss();
                         break;
 
-                    case R.id.setting_menu:
-                        fTransaction.replace(R.id.mainFrame, frag4).commitAllowingStateLoss();
+                    case R.id.mypage_menu:
+                        fTransaction.replace(R.id.mainFrame, myPageFragment).commitAllowingStateLoss();
                         break;
                 }
                 return true;

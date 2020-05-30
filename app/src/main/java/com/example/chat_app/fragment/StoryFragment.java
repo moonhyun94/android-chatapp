@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.chat_app.R;
 
-public class Frag3 extends Fragment {
+public class StoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.frag3, container, false);
+        return inflater.inflate(R.layout.story_fragment, container, false);
     }
 }

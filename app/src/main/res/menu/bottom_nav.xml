@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/main_menu"
+        android:id="@+id/friend_menu"
         android:enabled="true"
-        android:icon="@drawable/m_icon"
+        android:icon="@drawable/ic_default"
         android:title="main"/>
 
     <item
         android:id="@+id/chat_menu"
         android:enabled="true"
-        android:icon="@drawable/c_icon"
+        android:icon="@drawable/ic_chat"
         android:title="chat"/>
 
     <item
@@ -20,9 +20,9 @@
         android:title="story"/>
 
     <item
-        android:id="@+id/setting_menu"
+        android:id="@+id/mypage_menu"
         android:enabled="true"
-        android:icon="@drawable/p_icon"
+        android:icon="@drawable/ic_setting"
         android:title="settings"/>
 
 </menu>

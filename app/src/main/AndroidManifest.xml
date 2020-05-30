@@ -17,8 +17,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".MainPage" />
+        <activity android:name=".MainPageNavigation" />
         <activity android:name=".LoginActivity" />
+        <activity android:name=".Login"/>
 
         <meta-data
             android:name="preloaded_fonts"

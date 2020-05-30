@@ -29,6 +29,9 @@ public class Friend {
         this.statusMsg = statusMsg;
     }
 
+    public Friend() {
+    }
+
     public Friend(int id, String name, String statusMsg) {
         this.id = id;
         this.name = name;
