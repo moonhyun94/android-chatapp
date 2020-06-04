@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.chat_app.fragment.ChatFragment;
-import com.example.chat_app.fragment.FriendFragment;
+import com.example.chat_app.fragment.ChatRoomFragment;
+import com.example.chat_app.fragment.FriendPageFragment;
 import com.example.chat_app.fragment.MyPageFragment;
 import com.example.chat_app.fragment.StoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -21,8 +21,8 @@ public class MainPageNavigation extends AppCompatActivity {
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FragmentTransaction fTransaction;
 
-    private FriendFragment friendFragment = new FriendFragment();
-    private ChatFragment chatFragment = new ChatFragment();
+    private FriendPageFragment friendPageFragment = new FriendPageFragment();
+    private ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
     private StoryFragment storyFragment = new StoryFragment();
     private MyPageFragment myPageFragment = new MyPageFragment();
 
@@ -33,7 +33,7 @@ public class MainPageNavigation extends AppCompatActivity {
         Intent mainPageIntent = getIntent();
 
         fTransaction = fragmentManager.beginTransaction();
-        fTransaction.replace(R.id.mainFrame, friendFragment).commitAllowingStateLoss();
+        fTransaction.replace(R.id.mainFrame, friendPageFragment).commitAllowingStateLoss();
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNav);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -43,11 +43,11 @@ public class MainPageNavigation extends AppCompatActivity {
 
                 switch (menuItem.getItemId()) {
                     case R.id.friend_menu:
-                        fTransaction.replace(R.id.mainFrame, friendFragment).commitAllowingStateLoss();
+                        fTransaction.replace(R.id.mainFrame, friendPageFragment).commitAllowingStateLoss();
                         break;
 
                     case R.id.chat_menu:
-                        fTransaction.replace(R.id.mainFrame, chatFragment).commitAllowingStateLoss();
+                        fTransaction.replace(R.id.mainFrame, chatRoomFragment).commitAllowingStateLoss();
                         break;
 
                     case R.id.story_menu:

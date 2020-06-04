@@ -10,19 +10,21 @@
         android:layout_height="match_parent"
         android:padding="8dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/item_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
             android:layout_marginRight="30dp"
-            android:src="@drawable/s_icon" />
+            android:src="@drawable/ic_default" />
 
         <TextView
             android:id="@+id/item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/item_img"
+            android:layout_centerInParent="true"
             android:text="이름" />
 
         <TextView
@@ -30,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"
             android:text="상태 메세지" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

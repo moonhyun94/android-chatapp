@@ -19,7 +19,9 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainPageNavigation" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".Login"/>
+        <activity android:name=".FriendRequestActivity"/>
+        <activity android:name=".FriendProfile"/>
+        <activity android:name=".ChatActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.chat_app.models.User;
 import com.example.chat_app.utils.ValidationUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -64,37 +65,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     Log.d(TAG, "onComplete: " + task.isSuccessful());
 
-                    Map<String, Object> user = new HashMap<>();
-                    user.put("userName", name);
-                    user.put("name", name);
-                    user.put("email", email);
-                    user.put("password", password);
-                    user.put("phoneNum", phoneNum);
+                    User user = new User(R.drawable.ic_default, name, name, email, password, phoneNum, "");
                     documentReference = fStore.collection("users").document(email);
-                    documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(RegisterActivity.this, "Registration Success", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(RegisterActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, e.toString());
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(RegisterActivity.this, "Authorization Failed!", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, e.toString());
+                    documentReference.set(user);
+                    Toast.makeText(RegisterActivity.this, "회원가입 성공!", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
-            Toast.makeText(RegisterActivity.this, "회원가입 성공!", Toast.LENGTH_SHORT).show();
-            finish();
         }
     }
+
 
     @Override
     public void onClick(View view) {
