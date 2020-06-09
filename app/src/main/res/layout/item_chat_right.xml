@@ -5,18 +5,33 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/item_chat_userName"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="textEnd"
-        android:textSize="20sp"
-        android:text="이름"/>
-    <TextView
-        android:id="@+id/item_chatMsg"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="textEnd"
-        android:textSize="20sp"
-        android:text="메세지가 보일것이다."/>
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/item_chat_userName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_alignParentEnd="true"
+            android:textSize="15sp"
+            android:layout_marginLeft="10dp"
+            android:text="이름"/>
+
+        <TextView
+            android:id="@+id/item_chatMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="textStart"
+            android:layout_below="@+id/item_chat_userName"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:background="@drawable/bg_sender"
+            android:text="메세지가 보일것이다."/>
+    </RelativeLayout>
+
 </LinearLayout>

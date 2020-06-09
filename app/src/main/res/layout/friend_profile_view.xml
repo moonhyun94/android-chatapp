@@ -9,6 +9,7 @@
     app:cardElevation="8dp">
 
     <Button
+        android:id="@+id/friend_profile_closeBtn"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="#00000000"
@@ -21,20 +22,39 @@
         android:layout_weight="1">
 
         <ImageView
+            android:id="@+id/friend_profile_image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/lion"
+            android:adjustViewBounds="true"
             android:layout_weight="1"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="이름: " />
+                android:text="닉네임 : " />
+
+            <TextView
+                android:id="@+id/profile_nickName_friend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="닉네임이 표시될것이다" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이름 : " />
 
             <TextView
                 android:id="@+id/profile_name_friend"
@@ -50,7 +70,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="이메일: " />
+                android:text="이메일 : " />
 
             <TextView
                 android:id="@+id/email_profile_friend"

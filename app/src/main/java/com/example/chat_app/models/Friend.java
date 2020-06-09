@@ -1,8 +1,8 @@
 package com.example.chat_app.models;
 
 public class Friend {
-    private int profile_pic;
-    private String userName;
+    private String profile_pic_url;
+    private String nickName;
     private String name;
     private String email;
     private String phoneNum;
@@ -11,21 +11,21 @@ public class Friend {
     public Friend() {
     }
 
-    public Friend(int profile_pic, String userName, String name, String email, String phoneNum, String statusMsg) {
-        this.profile_pic = profile_pic;
-        this.userName = userName;
+    public Friend(String profile_pic_url, String nickName, String name, String email, String phoneNum, String statusMsg) {
+        this.profile_pic_url = profile_pic_url;
+        this.nickName = nickName;
         this.name = name;
         this.email = email;
         this.phoneNum = phoneNum;
         this.statusMsg = statusMsg;
     }
 
-    public int getProfile_pic() {
-        return profile_pic;
+    public String getProfile_pic_url() {
+        return profile_pic_url;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getNickName() {
+        return nickName;
     }
 
     public String getName() {

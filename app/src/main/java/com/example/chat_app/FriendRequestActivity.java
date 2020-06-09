@@ -54,7 +54,8 @@ public class FriendRequestActivity extends AppCompatActivity {
             public void acceptButtonClick(DocumentSnapshot documentSnapshot, int position) {
                 Friend requestInfo = documentSnapshot.toObject(Friend.class);
 
-                Friend friend = new Friend(requestInfo.getProfile_pic(), requestInfo.getUserName(), requestInfo.getName(), requestInfo.getEmail(),
+                // 여기 수정함
+                Friend friend = new Friend(requestInfo.getProfile_pic_url(), requestInfo.getNickName(), requestInfo.getName(), requestInfo.getEmail(),
                         requestInfo.getPhoneNum(), requestInfo.getStatusMsg());
 
                 DocumentReference addMyFriendDocRef = fStore.collection("friends/" + currentUser.getEmail() + "/follow").document(requestInfo.getEmail());

@@ -3,18 +3,18 @@ package com.example.chat_app.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chat_app.models.Friend;
 import com.example.chat_app.R;
+import com.example.chat_app.models.Friend;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.squareup.picasso.Picasso;
 
 public class FriendAdapter extends FirestoreRecyclerAdapter<Friend, FriendAdapter.FriendHolder> {
 
@@ -27,8 +27,16 @@ public class FriendAdapter extends FirestoreRecyclerAdapter<Friend, FriendAdapte
     @Override
     protected void onBindViewHolder(@NonNull FriendHolder holder, int position, @NonNull Friend model) {
 
-        holder.imageViewProfile.setImageResource(model.getProfile_pic());
-        holder.textViewName.setText(model.getName());
+        if(!model.getProfile_pic_url().isEmpty() && model.getProfile_pic_url().length() > 0) {
+            Picasso.get()
+                    .load(model.getProfile_pic_url())
+                    .placeholder(R.drawable.ic_default)
+                    .into(holder.imageViewProfile);
+        } else {
+            holder.imageViewProfile.setImageResource(R.drawable.ic_default);
+        }
+
+        holder.textViewName.setText(model.getNickName());
         holder.textViewStatusMsg.setText(model.getStatusMsg());
     }
 

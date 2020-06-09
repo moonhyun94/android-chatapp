@@ -64,7 +64,7 @@ public class ChatRoomFragment extends Fragment {
                 roomName = chatRoom.getRoomName();
                 friendEmail = chatRoom.getParticipantEmail();
 
-                // 채팅 방에서 채팅방 클릭시 채팅방 이름 넘겨줌
+                // 채팅 방에서 채팅방 클릭시 채팅방 이름 넘겨줌 이걸 파이어베이스에서 읽어와야될듯
                 intent.putExtra("roomName", roomName);
                 intent.putExtra("friendEmail", friendEmail);
 

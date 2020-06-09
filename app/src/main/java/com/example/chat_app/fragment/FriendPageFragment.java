@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.chat_app.FriendProfile;
+import com.example.chat_app.FriendProfileActivity;
 import com.example.chat_app.models.Friend;
 import com.example.chat_app.adapters.FriendAdapter;
 import com.example.chat_app.FriendRequestActivity;
@@ -78,9 +78,11 @@ public class FriendPageFragment extends Fragment implements View.OnClickListener
             @Override
             public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
                 Friend friend = documentSnapshot.toObject(Friend.class);
+                String nickName = friend.getNickName();
                 String name = friend.getName();
                 String email = friend.getEmail();
-                Intent intent = new Intent(getActivity(), FriendProfile.class);
+                Intent intent = new Intent(getActivity(), FriendProfileActivity.class);
+                intent.putExtra("nickName", nickName);
                 intent.putExtra("name", name);
                 intent.putExtra("email", email);
                 startActivity(intent);
@@ -126,14 +128,15 @@ public class FriendPageFragment extends Fragment implements View.OnClickListener
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
                                     User user = documentSnapshot.toObject(User.class);
-                                    int setFriendProfilePic = user.getProfile_pic();
-                                    String setFriendUserName = user.getUserName();
+                                    String setFriendProfilePic = user.getProfile_pic_url();
+                                    String setFriendNickName = user.getNickName();
                                     String setFriendName = user.getName();
                                     String setFriendEmail = user.getEmail();
                                     String setFriendPhoneNum = user.getPhoneNumber();
                                     String setFriendStatusMsg = user.getStatusMsg();
 
-                                    Friend friend = new Friend(setFriendProfilePic, setFriendUserName, setFriendName, setFriendEmail, setFriendPhoneNum, setFriendStatusMsg);
+                                    Friend friend = new Friend(setFriendProfilePic, setFriendNickName, setFriendName, setFriendEmail, setFriendPhoneNum, setFriendStatusMsg);
+                                    //Friend friend = new Friend("default", setFriendNickName, setFriendName, setFriendEmail, setFriendPhoneNum, setFriendStatusMsg);
                                     DocumentReference addMyFriendDocRef = fStore.collection("friends/" + currentUser.getEmail() + "/follow").document(setFriendEmail);
 
                                     addMyFriendDocRef.set(friend);
@@ -146,14 +149,15 @@ public class FriendPageFragment extends Fragment implements View.OnClickListener
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 User user = documentSnapshot.toObject(User.class);
-                                int requestFriendProfilePic = user.getProfile_pic();
-                                String requestFriendUserName = user.getUserName();
+                                String requestFriendProfilePic = user.getProfile_pic_url();
+                                String requestFriendNickName = user.getNickName();
                                 String requestFriendName = user.getName();
                                 String requestFriendEmail = user.getEmail();
                                 String requestFriendPhoneNum = user.getPhoneNumber();
                                 String requestFriendStatusMsg = user.getStatusMsg();
 
-                                Friend friend = new Friend(requestFriendProfilePic, requestFriendUserName, requestFriendName, requestFriendEmail, requestFriendPhoneNum, requestFriendStatusMsg);
+                                Friend friend = new Friend(requestFriendProfilePic, requestFriendNickName, requestFriendName, requestFriendEmail, requestFriendPhoneNum, requestFriendStatusMsg);
+                                //Friend friend = new Friend("default", requestFriendNickName, requestFriendName, requestFriendEmail, requestFriendPhoneNum, requestFriendStatusMsg);
                                 sendFriendRequestRef.collection("request").document(currentUser.getEmail()).set(friend);
                                 adapter.notifyDataSetChanged();
                             }

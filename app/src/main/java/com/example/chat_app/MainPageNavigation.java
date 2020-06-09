@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.chat_app.fragment.ChatRoomFragment;
 import com.example.chat_app.fragment.FriendPageFragment;
-import com.example.chat_app.fragment.MyPageFragment;
+import com.example.chat_app.fragment.UserProfileFragment;
 import com.example.chat_app.fragment.StoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,7 +24,7 @@ public class MainPageNavigation extends AppCompatActivity {
     private FriendPageFragment friendPageFragment = new FriendPageFragment();
     private ChatRoomFragment chatRoomFragment = new ChatRoomFragment();
     private StoryFragment storyFragment = new StoryFragment();
-    private MyPageFragment myPageFragment = new MyPageFragment();
+    private UserProfileFragment userProfileFragment = new UserProfileFragment();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class MainPageNavigation extends AppCompatActivity {
                         break;
 
                     case R.id.mypage_menu:
-                        fTransaction.replace(R.id.mainFrame, myPageFragment).commitAllowingStateLoss();
+                        fTransaction.replace(R.id.mainFrame, userProfileFragment).commitAllowingStateLoss();
                         break;
                 }
                 return true;

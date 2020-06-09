@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.chat_app.models.User;
 import com.example.chat_app.utils.ValidationUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -25,9 +23,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "RegisterActivity";
@@ -65,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     Log.d(TAG, "onComplete: " + task.isSuccessful());
 
-                    User user = new User(R.drawable.ic_default, name, name, email, password, phoneNum, "");
+                    User user = new User("", name, name, email, password, phoneNum, "");
                     documentReference = fStore.collection("users").document(email);
                     documentReference.set(user);
                     Toast.makeText(RegisterActivity.this, "회원가입 성공!", Toast.LENGTH_SHORT).show();
@@ -141,11 +136,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (inputPhoneNum.getText().toString().trim().isEmpty()) {
-                    phoneNumLayout.setError("전화번호를 입력해주세요.");
+                    phoneNumLayout.setError("핸드폰 번호를 입력해주세요.");
                     return;
                 }
                 if (!valUtil.getPhonePattern().matcher(inputPhoneNum.getText().toString().trim()).matches()) {
-                    phoneNumLayout.setError("핸드폰번호 형식이 아닙니다.");
+                    phoneNumLayout.setError("핸드폰 번호 형식이 아닙니다.");
                     return;
                 }
                 phoneNumLayout.setError(null);

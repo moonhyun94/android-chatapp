@@ -15,6 +15,7 @@ import com.example.chat_app.models.Friend;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -22,11 +23,21 @@ public class FriendRequestAdapter extends FirestoreRecyclerAdapter<Friend, Frien
 
     private ButtonClickListener listener;
 
-    public FriendRequestAdapter(@NonNull FirestoreRecyclerOptions<Friend> options) { super(options); }
+    public FriendRequestAdapter(@NonNull FirestoreRecyclerOptions<Friend> options) {
+        super(options);
+    }
 
     @Override
     protected void onBindViewHolder(@NonNull FriendRequestAdapter.FriendRequestViewHolder holder, int position, @NonNull Friend model) {
-        holder.profile_pic_view.setImageResource(model.getProfile_pic());
+
+        if(!model.getProfile_pic_url().isEmpty() && model.getProfile_pic_url().length() > 0) {
+            Picasso.get()
+                    .load(model.getProfile_pic_url())
+                    .placeholder(R.drawable.ic_default)
+                    .into(holder.profile_pic_view);
+        } else {
+            holder.profile_pic_view.setImageResource(R.drawable.ic_default);
+        }
         holder.name_view.setText(model.getName());
     }
 
