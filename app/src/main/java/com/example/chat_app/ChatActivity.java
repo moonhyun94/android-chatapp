@@ -3,7 +3,6 @@ package com.example.chat_app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -28,20 +27,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final int PICK_FROM_ALBUM = 1;
     private TextView roomNameTv;
     private ImageButton sendBtn;
-    private ImageButton sendImageBtn;
-    private CircleImageView circleImageView;
     private EditText inputMsg;
     private RecyclerView recyclerView;
     private MessageAdapter adapter;
@@ -51,7 +44,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private FirebaseUser currentUser = fAuth.getCurrentUser();
     private DocumentReference currentUserRef = fStore.collection("users").document(currentUser.getEmail());
     private String roomName, friendEmail, message, currentUserNickName;
-    private FirebaseStorage fStorageRef;
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -73,25 +66,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         sendBtn = findViewById(R.id.button_send);
         inputMsg = findViewById(R.id.edt_input_message);
         recyclerView = findViewById(R.id.chat_recycler);
-        sendImageBtn = findViewById(R.id.chat_attach_image_button);
-
 
         // get Intent From ChatRoomFragment 여기서 계속 업데이트 해줘야될듯
         Intent intent = getIntent();
         roomName = intent.getExtras().getString("roomName");
         roomNameTv.setText(roomName);
         friendEmail = intent.getExtras().getString("friendEmail");
-        Toast.makeText(this, "friendEmail" +friendEmail, Toast.LENGTH_SHORT).show();
         initRecyclerView();
         sendBtn.setOnClickListener(this);
-        sendImageBtn.setOnClickListener(this);
+
         // 내 이름 가져 오기 위한 리스너 입니다.
         currentUserRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User currentUser = documentSnapshot.toObject(User.class);
                 currentUserNickName = currentUser.getNickName();
-                Toast.makeText(ChatActivity.this, "currentUser" + currentUser.getNickName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -112,8 +101,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        // 요고 바꿔야됨
-        recyclerView.scrollToPosition(0);
     }
 
     @Override
@@ -148,20 +135,5 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        if(view == sendImageBtn) {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(intent, PICK_FROM_ALBUM);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == PICK_FROM_ALBUM && resultCode == RESULT_OK &&
-                data != null && data.getData() != null) {
-
-        }
     }
 }

@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -14,15 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.chat_app.R;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FriendAddDialog extends DialogFragment{
 
-    private static final String TAG = "FriendAddDialog";
-    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private EmailInputListener listener;
     private EditText findFriendByEmailDialogEditText;
-    private Button searchBtn;
 
     public FriendAddDialog(){}
 

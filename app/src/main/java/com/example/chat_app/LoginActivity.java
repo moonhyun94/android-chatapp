@@ -2,7 +2,6 @@ package com.example.chat_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,9 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.chat_app.utils.ValidationUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
@@ -24,23 +21,21 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
     private Button loginBtn, registerBtn;
     private FirebaseAuth fAuth;
-    private FirebaseAuth.AuthStateListener fAuthListener;
     private TextInputEditText userEmail, userPassword;
-    private ValidationUtils valUtil;
-    private static final String TAG = "LoginActivity";
 
     @Override
     protected void onStart() {
         super.onStart();
-        checkUserStatus();
+        FirebaseUser user = fAuth.getCurrentUser();
+        if (user != null) {
+            // user signed in
+            startActivity(new Intent(getApplicationContext(), MainPageNavigation.class));
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-//        if(fAuthListener != null) {
-//            fAuth.removeAuthStateListener(fAuthListener);
-//        }
     }
 
     @Override
@@ -61,27 +56,10 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainPageNavigation.class));
                     finish();
                 } else {
-                    Toast.makeText(LoginActivity.this, "Login task Error!", Toast.LENGTH_SHORT).show();
-                    Log.w(TAG, "Login task Failed", task.getException());
+                    Toast.makeText(LoginActivity.this, "가입되지 않은 회원입니다!", Toast.LENGTH_SHORT).show();
                 }
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(LoginActivity.this, "Sign in Error!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.toString());
-            }
         });
-    }
-
-    private void checkUserStatus() {
-        FirebaseUser user = fAuth.getCurrentUser();
-        if (user != null) {
-            // user signed in
-            Toast.makeText(LoginActivity.this, "STATUS: signed in" + user.getUid(), Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(LoginActivity.this, "STATUS: not signed in", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void initContent() {

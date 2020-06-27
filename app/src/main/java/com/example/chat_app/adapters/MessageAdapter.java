@@ -1,6 +1,5 @@
 package com.example.chat_app.adapters;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chat_app.R;
 import com.example.chat_app.models.Message;
-import com.example.chat_app.models.User;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -22,8 +20,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAdapter.ChatViewHolder> {
@@ -32,7 +28,7 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
     public static final int MSG_TYPE_RIGHT = 1;
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private DocumentReference currentUserRef;
-    private String getMsgTypeLeftEmail;
+
     public MessageAdapter(@NonNull FirestoreRecyclerOptions<Message> options) {
         super(options);
     }
@@ -54,12 +50,13 @@ public class MessageAdapter extends FirestoreRecyclerAdapter<Message, MessageAda
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         String profile_pic_url = documentSnapshot.getString("profile_pic_url");
                         if(!profile_pic_url.isEmpty() && profile_pic_url.length() > 0) {
-
                             Picasso.get()
                                     .load(profile_pic_url)
                                     .placeholder(R.drawable.ic_default)
                                     .error(R.drawable.ic_default)
                                     .into(holder.profile_image);
+                        } else {
+                            holder.profile_image.setImageResource(R.drawable.ic_default);
                         }
                     }
                 });

@@ -13,11 +13,11 @@
         android:icon="@drawable/ic_chat"
         android:title="chat"/>
 
-    <item
-        android:id="@+id/story_menu"
-        android:enabled="true"
-        android:icon="@drawable/s_icon"
-        android:title="story"/>
+<!--    <item-->
+<!--        android:id="@+id/story_menu"-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@drawable/s_icon"-->
+<!--        android:title="story"/>-->
 
     <item
         android:id="@+id/mypage_menu"

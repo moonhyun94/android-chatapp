@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -43,8 +42,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         inputListener();
     }
 
-    // 중복 이메일 확인 함수 구현 필요.
-
     private void createUser() {
         final String name, email, password, phoneNum;
         name = inputName.getText().toString().trim();
@@ -58,8 +55,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             fAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.d(TAG, "onComplete: " + task.isSuccessful());
-
                     User user = new User("", name, name, email, password, phoneNum, "");
                     documentReference = fStore.collection("users").document(email);
                     documentReference.set(user);
@@ -70,22 +65,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-
     @Override
     public void onClick(View view) {
-        if (view == submissionBtn) {
-            createUser();
-        }
-        if (view == backBtn) {
-            finish();
-        }
+        if (view == submissionBtn) { createUser(); }
+        if (view == backBtn) { finish(); }
     }
 
     private void inputListener() {
         inputEmail.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
@@ -101,14 +90,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable) { }
         });
 
         inputPassword.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -124,8 +111,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable) { }
         });
 
         inputPhoneNum.addTextChangedListener(new TextWatcher() {
@@ -147,14 +133,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable) { }
         });
 
         inputName.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -166,8 +150,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
 
             @Override
-            public void afterTextChanged(Editable editable) {
-            }
+            public void afterTextChanged(Editable editable) { }
         });
     }
 

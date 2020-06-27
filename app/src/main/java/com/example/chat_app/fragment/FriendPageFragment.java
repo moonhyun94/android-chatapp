@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.chat_app.FriendProfileActivity;
-import com.example.chat_app.models.Friend;
-import com.example.chat_app.adapters.FriendAdapter;
 import com.example.chat_app.FriendRequestActivity;
 import com.example.chat_app.R;
+import com.example.chat_app.adapters.FriendAdapter;
+import com.example.chat_app.models.Friend;
 import com.example.chat_app.models.User;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;

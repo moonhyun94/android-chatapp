@@ -17,10 +17,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class ChatRoomAdapter extends FirestoreRecyclerAdapter<ChatRoom, ChatRoomAdapter.ChatRoomHolder> {
 
     private ChatRoomClickListener listener;
-
-    public ChatRoomAdapter(@NonNull FirestoreRecyclerOptions<ChatRoom> options) {
-        super(options);
-    }
+    private ChatRoomLongClickListener longListener;
+    public ChatRoomAdapter(@NonNull FirestoreRecyclerOptions<ChatRoom> options) { super(options); }
 
     @Override
     protected void onBindViewHolder(@NonNull ChatRoomAdapter.ChatRoomHolder holder, int position, @NonNull ChatRoom model) {
@@ -36,13 +34,12 @@ public class ChatRoomAdapter extends FirestoreRecyclerAdapter<ChatRoom, ChatRoom
     }
 
     class ChatRoomHolder extends RecyclerView.ViewHolder {
-        TextView lastMsg, chatRoomName, msgCount;
+        TextView lastMsg, chatRoomName;
 
         public ChatRoomHolder(@NonNull View itemView) {
             super(itemView);
             lastMsg = itemView.findViewById(R.id.last_message_view);
             chatRoomName = itemView.findViewById(R.id.chat_room_name);
-            msgCount = itemView.findViewById(R.id.msg_count_view);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -52,14 +49,29 @@ public class ChatRoomAdapter extends FirestoreRecyclerAdapter<ChatRoom, ChatRoom
                     }
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        longListener.onChatRoomLongClick(getSnapshots().getSnapshot(position), position);
+                    }
+                    return true;
+                }
+            });
         }
     }
-    public interface ChatRoomClickListener {
-        void onChatRoomClick(DocumentSnapshot documentSnapshot, int position);
+    public interface ChatRoomClickListener { void onChatRoomClick(DocumentSnapshot documentSnapshot, int position);}
+
+    public interface ChatRoomLongClickListener {
+        void onChatRoomLongClick(DocumentSnapshot documentSnapshot, int position);
     }
 
-    public void setChatRoomClickListener(ChatRoomClickListener listener) {
-        this.listener = listener;
+    public void setChatRoomClickListener(ChatRoomClickListener listener) { this.listener = listener; }
+
+    public void setChatRoomLongClickListener(ChatRoomLongClickListener longListener) {
+        this.longListener = longListener;
     }
 }
 

@@ -1,11 +1,9 @@
 package com.example.chat_app.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.chat_app.LoginActivity;
 import com.example.chat_app.R;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,31 +45,28 @@ import java.util.List;
 
 public class UserProfileFragment extends Fragment {
 
-    private EditText userStatusMsgEditText; //userNickNameEditText,
+    private EditText userStatusMsgEditText;
     private TextInputEditText userNickNameEditText;
     private ImageButton userNickNameEditButton, userStatusMsgEditButton;
     private ImageView userProfilePicView;
     private TextView userNameText, userEmailText, userPhoneNumText;
-    private Button logOutButton, deleteAccountButton, changePasswordButton;
+    private Button logOutButton, deleteAccountButton;
     private FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser;
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private ListenerRegistration profileListener;
     private DocumentReference currentUserRef;
-    private String getFriendEmail;
     private StorageReference mStorageRef;
-    private DocumentReference currentUserImageRef;
     private static final int PICK_FROM_ALBUM = 1;
     private Uri uri;
-    private Boolean isPermission = false;
+    private CollectionReference friendRef;
 
     @Override
     public void onStart() {
         super.onStart();
         currentUser = fAuth.getCurrentUser();
         mStorageRef = FirebaseStorage.getInstance().getReference(currentUser.getEmail()).child("profile");
-        // images/ email/ profile/ email 에 프로필 사진 저장
-        currentUserImageRef = fStore.collection("images").document(currentUser.getEmail()).collection("profile").document(currentUser.getEmail());
+
         profileListener = currentUserRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
@@ -126,7 +122,6 @@ public class UserProfileFragment extends Fragment {
 
         logOutButton = (Button) view.findViewById(R.id.user_profile_logOutBtn);
         deleteAccountButton = (Button) view.findViewById(R.id.user_profile_deleteAccountBtn);
-        changePasswordButton = (Button) view.findViewById(R.id.user_profile_editPasswordBtn);
 
         currentUser = fAuth.getCurrentUser();
         currentUserRef = fStore.collection("users").document(currentUser.getEmail());
@@ -231,6 +226,106 @@ public class UserProfileFragment extends Fragment {
                 initAlbum();
             }
         });
+
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DeleteUserDialog dialog = DeleteUserDialog.getInstance(new DeleteUserDialog.DeleteUserListener() {
+                    @Override
+                    public void onComplete() {
+                        friendRef = fStore.collection("friends").document(currentUser.getEmail())
+                                .collection("follow");
+                        CollectionReference chatRef = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                .collection("rooms");
+
+                        friendRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    String email = snapshot.getString("email");
+
+                                    DocumentReference reference = fStore.collection("friends").document(email)
+                                            .collection("follow").document(currentUser.getEmail());
+                                    reference.delete();
+
+                                    DocumentReference reference2 =friendRef.document(email);
+                                    reference2.delete();
+                                }
+                            }
+                        });
+
+                        chatRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    final String email = snapshot.getString("participantEmail");
+
+                                    final CollectionReference msgRef = fStore.collection("chatRooms").document(email)
+                                            .collection("rooms").document(currentUser.getEmail()).collection("messages");
+                                    msgRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                                DocumentReference tmpRef = fStore.collection("chatRooms").document(email)
+                                                        .collection("rooms").document(currentUser.getEmail())
+                                                        .collection("messages").document(snapshot.getId());
+                                                tmpRef.delete();
+                                            }
+                                        }
+                                    });
+
+                                    final CollectionReference msgRef2 = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                            .collection("rooms").document(email).collection("messages");
+                                    msgRef2.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                                DocumentReference tmpRef = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                                        .collection("rooms").document(email)
+                                                        .collection("messages").document(snapshot.getId());
+                                                tmpRef.delete();
+                                            }
+                                        }
+                                    });
+
+                                    DocumentReference reference = fStore.collection("chatRooms").document(email).collection("rooms")
+                                            .document(currentUser.getEmail());
+                                    reference.delete();
+
+                                    DocumentReference reference2 = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                            .collection("rooms").document(email);
+                                    reference2.delete();
+                                }
+                            }
+                        });
+                        deleteAccount();
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+        });
+
+        logOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fAuth.signOut();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void deleteAccount() {
+        profileListener.remove();
+        DocumentReference userRef = fStore.collection("users").document(currentUser.getEmail());
+        userRef.delete();
+        backToLogin();
+    }
+
+    private void backToLogin() {
+        Intent intent = new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        currentUser.delete();
     }
 
     private void updateChatNickName(List<String> modifyList, String friendEmail, String newNickName) {
@@ -244,7 +339,6 @@ public class UserProfileFragment extends Fragment {
     }
 
     private void initAlbum() {
-
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);

@@ -90,9 +90,10 @@
                 android:text="채팅하기" />
 
             <Button
+                android:id="@+id/delete_friend_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="삭제" />
+                android:text="친구 삭제" />
         </LinearLayout>
 
     </LinearLayout>

@@ -2,7 +2,6 @@ package com.example.chat_app;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,20 +18,23 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 public class FriendProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button chatButton, delete;
+    private Button chatButton, delete, closeBtn;
     private TextView nameView, emailView, nickNameView;
     private ImageView profileView;
     private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
     private FirebaseAuth fAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = fAuth.getCurrentUser();
+    private CollectionReference friendRef;
     private String friendName, friendEmail, friendNickName;
     private DocumentReference getFriendRef;
 
@@ -45,15 +47,13 @@ public class FriendProfileActivity extends AppCompatActivity implements View.OnC
         nickNameView = (TextView) findViewById(R.id.profile_nickName_friend);
         profileView = (ImageView) findViewById(R.id.friend_profile_image);
         chatButton = (Button) findViewById(R.id.chatBtn);
-
+        closeBtn = (Button) findViewById(R.id.friend_profile_closeBtn);
+        delete = (Button) findViewById(R.id.delete_friend_button);
         // get Intent from FriendPageFragment
         Intent intent = getIntent();
         friendNickName = intent.getExtras().getString("nickName");
         friendName = intent.getExtras().getString("name");
         friendEmail = intent.getExtras().getString("email");
-//        nickNameView.setText(friendNickName);
-//        nameView.setText(friendName);
-//        emailView.setText(friendEmail);
 
         getFriendRef = fStore.collection("users").document(friendEmail);
         getFriendRef.get()
@@ -79,10 +79,83 @@ public class FriendProfileActivity extends AppCompatActivity implements View.OnC
                     }
                 });
         chatButton.setOnClickListener(this);
+        closeBtn.setOnClickListener(this);
+        delete.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
+        if(view == closeBtn) {
+            finish();
+        }
+        if(view == delete) {
+            friendRef = fStore.collection("friends").document(currentUser.getEmail())
+                    .collection("follow");
+            CollectionReference chatRef = fStore.collection("chatRooms").document(currentUser.getEmail())
+                    .collection("rooms");
+
+            friendRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        String email = snapshot.getString("email");
+
+                        DocumentReference reference = fStore.collection("friends").document(email)
+                                .collection("follow").document(currentUser.getEmail());
+                        reference.delete();
+
+                        DocumentReference reference2 = friendRef.document(email);
+                        reference2.delete();
+                    }
+                }
+            });
+
+            chatRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        final String email = snapshot.getString("participantEmail");
+
+                        final CollectionReference msgRef = fStore.collection("chatRooms").document(email)
+                                .collection("rooms").document(currentUser.getEmail()).collection("messages");
+                        msgRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    DocumentReference tmpRef = fStore.collection("chatRooms").document(email)
+                                            .collection("rooms").document(currentUser.getEmail())
+                                            .collection("messages").document(snapshot.getId());
+                                    tmpRef.delete();
+                                }
+                            }
+                        });
+
+                        final CollectionReference msgRef2 = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                .collection("rooms").document(email).collection("messages");
+                        msgRef2.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                                    DocumentReference tmpRef = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                            .collection("rooms").document(email)
+                                            .collection("messages").document(snapshot.getId());
+                                    tmpRef.delete();
+                                }
+                            }
+                        });
+
+                        DocumentReference reference = fStore.collection("chatRooms").document(email).collection("rooms")
+                                .document(currentUser.getEmail());
+                        reference.delete();
+
+                        DocumentReference reference2 = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                .collection("rooms").document(email);
+                        reference2.delete();
+                    }
+                }
+            });
+            finish();
+        }
         if (view == chatButton) {
             String roomName = nickNameView.getText().toString().trim();
 

@@ -18,6 +18,7 @@ import com.example.chat_app.R;
 import com.example.chat_app.adapters.ChatRoomAdapter;
 import com.example.chat_app.models.ChatRoom;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,6 +26,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class ChatRoomFragment extends Fragment {
 
@@ -71,6 +74,33 @@ public class ChatRoomFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        adapter.setChatRoomLongClickListener(new ChatRoomAdapter.ChatRoomLongClickListener() {
+            @Override
+            public void onChatRoomLongClick(DocumentSnapshot documentSnapshot, int position) {
+                DeleteRoomDialog dialog = DeleteRoomDialog.getInstance(new DeleteRoomDialog.DeleteRoomListener() {
+                    @Override
+                    public void onComplete() {
+                        final CollectionReference myRef = fStore.collection("chatRooms").document(user.getEmail()).collection("rooms")
+                                .document(friendEmail).collection("messages");
+                        myRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                for(QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                                    DocumentReference deleteMsg = myRef.document(document.getId());
+                                    deleteMsg.delete();
+                                }
+                            }
+                        });
+                        DocumentReference deleteRoom = fStore.collection("chatRooms").document(user.getEmail())
+                                .collection("rooms").document(friendEmail);
+                        deleteRoom.delete();
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+        });
+
         return view;
     }
 
