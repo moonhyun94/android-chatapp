@@ -35,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -60,11 +61,12 @@ public class UserProfileFragment extends Fragment {
     private static final int PICK_FROM_ALBUM = 1;
     private Uri uri;
     private CollectionReference friendRef;
-
+    private String currentUserEmail;
     @Override
     public void onStart() {
         super.onStart();
         currentUser = fAuth.getCurrentUser();
+        currentUserEmail = currentUser.getEmail();
         mStorageRef = FirebaseStorage.getInstance().getReference(currentUser.getEmail()).child("profile");
 
         profileListener = currentUserRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -233,9 +235,9 @@ public class UserProfileFragment extends Fragment {
                 DeleteUserDialog dialog = DeleteUserDialog.getInstance(new DeleteUserDialog.DeleteUserListener() {
                     @Override
                     public void onComplete() {
-                        friendRef = fStore.collection("friends").document(currentUser.getEmail())
+                        friendRef = fStore.collection("friends").document(currentUserEmail)
                                 .collection("follow");
-                        CollectionReference chatRef = fStore.collection("chatRooms").document(currentUser.getEmail())
+                        CollectionReference chatRef = fStore.collection("chatRooms").document(currentUserEmail)
                                 .collection("rooms");
 
                         friendRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -245,10 +247,9 @@ public class UserProfileFragment extends Fragment {
                                     String email = snapshot.getString("email");
 
                                     DocumentReference reference = fStore.collection("friends").document(email)
-                                            .collection("follow").document(currentUser.getEmail());
+                                            .collection("follow").document(currentUserEmail);
                                     reference.delete();
-
-                                    DocumentReference reference2 =friendRef.document(email);
+                                    DocumentReference reference2 = friendRef.document(email);
                                     reference2.delete();
                                 }
                             }
@@ -261,26 +262,26 @@ public class UserProfileFragment extends Fragment {
                                     final String email = snapshot.getString("participantEmail");
 
                                     final CollectionReference msgRef = fStore.collection("chatRooms").document(email)
-                                            .collection("rooms").document(currentUser.getEmail()).collection("messages");
+                                            .collection("rooms").document(currentUserEmail).collection("messages");
                                     msgRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                                                 DocumentReference tmpRef = fStore.collection("chatRooms").document(email)
-                                                        .collection("rooms").document(currentUser.getEmail())
+                                                        .collection("rooms").document(currentUserEmail)
                                                         .collection("messages").document(snapshot.getId());
                                                 tmpRef.delete();
                                             }
                                         }
                                     });
 
-                                    final CollectionReference msgRef2 = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                    final CollectionReference msgRef2 = fStore.collection("chatRooms").document(currentUserEmail)
                                             .collection("rooms").document(email).collection("messages");
                                     msgRef2.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                         @Override
                                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                                             for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                                                DocumentReference tmpRef = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                                DocumentReference tmpRef = fStore.collection("chatRooms").document(currentUserEmail)
                                                         .collection("rooms").document(email)
                                                         .collection("messages").document(snapshot.getId());
                                                 tmpRef.delete();
@@ -289,10 +290,10 @@ public class UserProfileFragment extends Fragment {
                                     });
 
                                     DocumentReference reference = fStore.collection("chatRooms").document(email).collection("rooms")
-                                            .document(currentUser.getEmail());
+                                            .document(currentUserEmail);
                                     reference.delete();
 
-                                    DocumentReference reference2 = fStore.collection("chatRooms").document(currentUser.getEmail())
+                                    DocumentReference reference2 = fStore.collection("chatRooms").document(currentUserEmail)
                                             .collection("rooms").document(email);
                                     reference2.delete();
                                 }
@@ -317,15 +318,16 @@ public class UserProfileFragment extends Fragment {
 
     private void deleteAccount() {
         profileListener.remove();
-        DocumentReference userRef = fStore.collection("users").document(currentUser.getEmail());
+        DocumentReference userRef = fStore.collection("users").document(currentUserEmail);
         userRef.delete();
         backToLogin();
     }
 
     private void backToLogin() {
+        currentUser.delete();
+        fAuth.signOut();
         Intent intent = new Intent(getActivity(), LoginActivity.class);
         startActivity(intent);
-        currentUser.delete();
     }
 
     private void updateChatNickName(List<String> modifyList, String friendEmail, String newNickName) {
@@ -335,7 +337,6 @@ public class UserProfileFragment extends Fragment {
 
             updateChatNickNameRef.update("nickName", newNickName);
         }
-
     }
 
     private void initAlbum() {
