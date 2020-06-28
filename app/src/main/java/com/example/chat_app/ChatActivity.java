@@ -108,7 +108,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         if (view == sendBtn) {
             message = inputMsg.getText().toString();
             if (!message.isEmpty()) {
-
+                inputMsg.setText("");
                 // 친구에게 보낼 채팅 item 생성 , LEFT  sender                     receiver
                 Message friendMessage = new Message(currentUser.getEmail(), friendEmail, currentUserNickName, message, new Timestamp(new Date()));
                 // 나에게 보낼 채팅 item 생성 , RIGHT
